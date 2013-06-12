@@ -17,8 +17,9 @@
 //
 ////////////////////////////////////////////////////////////////////
 
+
 // CubeWerx requires at least 10M for wms capabilities
-ini_set( 'memory_limit', '50M' );
+ini_set( 'memory_limit', '20M' );
 
 /**
  *
@@ -172,8 +173,8 @@ class CapabilitiesParser
                     case 'Title':
                     case 'Name':
                     case 'Abstract':
-    //print 'abstract=' . $test . '<br/>';     
-                        $this->layer_props[$this->layer_level][$this->element] .= $text;
+    //print 'abstract=' . $test . '<br/>';
+                        $this->layer_props[ $this->layer_level][ $this->element ] .= $text;
                         break;
                 }
             }
@@ -184,12 +185,12 @@ class CapabilitiesParser
                     case 'Title':
                     case 'Name':
                         // if not a style name!!
-                        $this->layer_props[$this->layer_level][ $this->element] .= $text;
+                        $this->layer_props[ $this->layer_level][ $this->element ] .= $text;
                         break;
                     case 'Abstract':
     //print 'abstract=' . $test . '<br/>';
                         // if not a style name!!
-                        $this->layer_props[$this->layer_level][ $this->element] .= $text;
+                        $this->layer_props[ $this->layer_level][ $this->element ] .= $text;
                         break;
                     case 'SRS':
                         if( isset($this->layer_props[ $this->layer_level][ $this->element ]) 
@@ -253,4 +254,4 @@ class CapabilitiesParser
     
 } // CapabilitiesParser
 
-?>
+?>       
