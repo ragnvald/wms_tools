@@ -1,22 +1,5 @@
 <?php
-////////////////////////////////////////////////////////////////////
-//
-//  wms-parser.php is a library which opens a wms-server and requests
-//  information relevant information about the service.
-//
-//  Source information from Geoserver:
-//      wms-parser.php class library. This file is part of Carto Module 
-//      for Drupal by John Pulles.
-//      You can download the whole module and extract only this file, or 
-//      get the latest code from CVS web at 
-//      http://cvs.drupal.org/viewcvs/drupal/contributions/modules/carto/wms-parser.php
-//
-//The module has undergone some minor changes for clarity of reading.
-//                                                                                                                                
-//  Ragnvald.larsen@dirnat.no
-//
-////////////////////////////////////////////////////////////////////
-
+// $Id: wms-parser.php,v 1.2 2006/10/13 13:22:51 openwereld Exp $
 
 // CubeWerx requires at least 10M for wms capabilities
 ini_set( 'memory_limit', '20M' );
@@ -173,9 +156,9 @@ class CapabilitiesParser
                     case 'Title':
                     case 'Name':
                     case 'Abstract':
-    //print 'abstract=' . $test . '<br/>';
-                        $this->layer_props[ $this->layer_level][ $this->element ] .= $text;
-                        break;
+    //print 'abstract=' . $test . '<br/>';   
+                    $this->layer_props[ $this->layer_level][ $this->element ] .= $text;
+                    break;                   
                 }
             }
             if( $this->layer_level > 0 && ! $this->inSomething() )
@@ -211,8 +194,8 @@ class CapabilitiesParser
                         break;
                 }
             }
-//            print $this->path . ':<b>' . $this->element . '=' . $text . '|</b><br>';
-//            print '---> ' . $this->layer_level . '/' . var_export($this->layer_props[ $this->layer_level],true) . '<br>';
+            #print $this->path . ':<b>' . $this->element . '=' . $text . '|</b><br>';
+            #print '---> ' . $this->layer_level . '/' . var_export($this->layer_props[ $this->layer_level],true) . '<br>';
             
             //$this->element = ''; // previously here instead of at start of _endElement
         }
@@ -254,4 +237,4 @@ class CapabilitiesParser
     
 } // CapabilitiesParser
 
-?>       
+?>

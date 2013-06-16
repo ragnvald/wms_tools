@@ -15,24 +15,21 @@
 $select_workspace=isset($_GET['ws']);
 
 
+
 //Do the default workspace if the request returns empty
 if (empty($select_workspace))
     {
     $select_workspace="files";
     }
 
-$select_workspace = $select_workspace.":";                            
-                                    // $Id$
-
-// CubeWerx requires at least 10M for wms capabilities
-ini_set( 'memory_limit', '20M' );
+$select_workspace = $select_workspace.":";
 
 include("include/wms-parser.php");
 
 //Calculate the workspace length for use later
 $select_workspace_length=strlen($select_workspace);
 
-$nombre_archivo         ="http://mapa.meioambiente.tl:8080/geoserver/wms?request=GetCapabilities&service=WMS";
+$nombre_archivo         ="http://mapa.meioambiente.tl:8080/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
 $gestor                 =fopen($nombre_archivo, "rb");
 $contenido              =stream_get_contents($gestor);
 fclose ($gestor);
@@ -121,18 +118,18 @@ $caps->free_parser();
 
                             <br>
                             <table>
-                                <tr><tdcolspan=2><a href="http://mapa.meioambiente.tl:8080/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo isset($l['Name']) ?>&outputFormat=SHAPE-ZIP">Download shapefile</a></td></tr>
+                                <tr><td colspan=2><a href="http://mapa.meioambiente.tl:8080/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo isset($l['Name']) ?>&outputFormat=SHAPE-ZIP">Download shapefile</a></td></tr>
                                 <tr><td><b>Legend&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>Abstract</b></td></tr>
                                 <tr><td><img src = "http://mapa.meioambiente.tl:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo isset($l['Name']) ?>"></td>
 
                                     <td>
                             <?php
-                                        echo $l['Abstract']                      ?>
+                                        echo isset($l['Abstract'])                      ?>
 
                                         <br>
                                         Bounding box: (<i><?php echo
-    $l['LatLonBoundingBox']['minx'] . ',' . $l['LatLonBoundingBox']['miny'] . ',' . $l['LatLonBoundingBox']['maxx']
-        . ',' . $l['LatLonBoundingBox']['maxy']; ?>)</i>
+    isset($l['LatLonBoundingBox']['minx']) . ',' . isset($l['LatLonBoundingBox']['miny']) . ',' . isset($l['LatLonBoundingBox']['maxx'])
+        . ',' . isset($l['LatLonBoundingBox']['maxy']); ?>)</i>
                         </div>
 
                         </td>
