@@ -2,18 +2,18 @@
 
 include ('include/wms-parser.php');
 
-$nombre_archivo = "http://mapa.meioambiente.tl:8080/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
+$name_source = "http://wms.dirnat.no/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
 
-$gestor = fopen($nombre_archivo, "r");
-$contenido = stream_get_contents($gestor);
-fclose($gestor);
+$source_info = fopen($name_source, "r");
+$contents = stream_get_contents($source_info);
+fclose($source_info);
 
 $caps = new CapabilitiesParser( );
-$caps->parse($contenido);
+$caps->parse($contents);
 $caps->free_parser( );
 
 ?>
-<h1>WMS Services Description</h1>
+<h1>Layers on this server</h1>
 
 <strong>WMS version:</strong> <?php echo $caps->version ?><br />
 <strong>Layers count:</strong> <?php echo sizeof($caps->layers) ?> <br />
@@ -23,8 +23,9 @@ $caps->free_parser( );
 <?php foreach ($caps->layers as $l) { ?>
   <li><strong><?php echo $l['Title'] ?></strong><br />
   <?php echo $l['Abstract'] ?><br />
-  Limits: (<i><?php echo $l['LatLonBoundingBox']['minx'] . ',' .
-                         $l['LatLonBoundingBox']['miny'] . ',' .
+  <?php echo $l['SRS'] ?><br />
+  Limits: (<i><?php echo $l['LatLonBoundingBox']['minx'] . ',' .    
+                         $l['LatLonBoundingBox']['miny'] . ',' .   
                          $l['LatLonBoundingBox']['maxx'] . ',' .
                          $l['LatLonBoundingBox']['maxy'];  ?>)</i>
   </p></li>

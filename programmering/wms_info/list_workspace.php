@@ -19,7 +19,7 @@ $select_workspace=isset($_GET['ws']);
 //Do the default workspace if the request returns empty
 if (empty($select_workspace))
     {
-    $select_workspace="files";
+    $select_workspace="inon";
     }
 
 $select_workspace = $select_workspace.":";
@@ -29,7 +29,7 @@ include("include/wms-parser.php");
 //Calculate the workspace length for use later
 $select_workspace_length=strlen($select_workspace);
 
-$nombre_archivo         ="http://mapa.meioambiente.tl:8080/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
+$nombre_archivo         ="http://wms.dirnat.no/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
 $gestor                 =fopen($nombre_archivo, "rb");
 $contenido              =stream_get_contents($gestor);
 fclose ($gestor);
@@ -101,12 +101,12 @@ $caps->free_parser();
                 {
                 if (isset($l['queryable']))
                     {
-                    if (substr((isset($l['Name'])), 0, $select_workspace_length) == $select_workspace)
+                    if (substr(($l['Name']), 0, $select_workspace_length) == $select_workspace)
                         {
-            ?>
+                            ?>
 
-                        <li><table><tr><td width=400><b><?php echo isset($l['Title']) ?></b></td><td>(<a href = http://mapa.meioambiente.tl:8080/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo isset($l['Name']) ?>&styles=&bbox=500000.0,9565902.0,852305.875,9889125.0&width=512&height=469&srs=EPSG:21036&format=application/openlayers><?php
-    echo isset($l['Name']) ?></a>)</td></tr></table>
+                        <li><table><tr><td width=400><b><?php echo $l['Title'] ?></b></td><td>(<a href = http://wms.dirnat.no/geoserver/ows?service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $l['LatLonBoundingBox']['minx'] . ',' . $l['LatLonBoundingBox']['miny'] . ',' . $l['LatLonBoundingBox']['maxx'] . ',' . $l['LatLonBoundingBox']['maxy']; ?>&width=512&height=469&srs=32630&format=application/openlayers><?php
+    echo $l['Name'] ?></a>)</td></tr></table>
     <a href = "#" id = "<?php echo ($i-1) ?>-show" class = "showLink"
                            onclick = "showHide('<?php echo ($i-1) ?>');return false;"> <img src="graphics/btn_open.gif" border="0" width="19" height="25" alt="Open"></a>
 
@@ -118,9 +118,9 @@ $caps->free_parser();
 
                             <br>
                             <table>
-                                <tr><td colspan=2><a href="http://mapa.meioambiente.tl:8080/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo isset($l['Name']) ?>&outputFormat=SHAPE-ZIP">Download shapefile</a></td></tr>
+                                <tr><td colspan=2><a href="http://wms.dirnat.no/geoserver/ows?service=wms&version=1.1.1&request=GetFeature&typeName=<?php echo isset($l['Name']) ?>&outputFormat=SHAPE-ZIP">Download shapefile</a></td></tr>
                                 <tr><td><b>Legend&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>Abstract</b></td></tr>
-                                <tr><td><img src = "http://mapa.meioambiente.tl:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo isset($l['Name']) ?>"></td>
+                                <tr><td><img src = "http://wms.dirnat.no/geoserver/ows?service=wms&version=1.1.1&request=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo $l['Name'] ?>"></td>
 
                                     <td>
                             <?php
@@ -128,8 +128,8 @@ $caps->free_parser();
 
                                         <br>
                                         Bounding box: (<i><?php echo
-    isset($l['LatLonBoundingBox']['minx']) . ',' . isset($l['LatLonBoundingBox']['miny']) . ',' . isset($l['LatLonBoundingBox']['maxx'])
-        . ',' . isset($l['LatLonBoundingBox']['maxy']); ?>)</i>
+    $l['LatLonBoundingBox']['minx'] . ',' . $l['LatLonBoundingBox']['miny'] . ',' . $l['LatLonBoundingBox']['maxx']
+        . ',' . $l['LatLonBoundingBox']['maxy']; ?>)</i>
                         </div>
 
                         </td>
