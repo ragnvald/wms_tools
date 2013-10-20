@@ -11,42 +11,6 @@
 ///////////////////////////////////////////////////////////////////
 
 
-function get_boundingbox_native($srs_bbox_arrays){ 
-
-    
-    $srs_native = (array_keys($srs_bbox_arrays['BoundingBox']));
-                        
-    if (isset($srs_bbox_arrays['BoundingBox'][$srs_native]['minx'])) 
-    {
-        $current_minx_geo = $srs_bbox_arrays['BoundingBox'][$srs_native]['minx'];  
-        $minx_geo = floatval($current_minx_geo);
-        
-    }
-
-    if (isset($srs_bbox_arrays['BoundingBox']['miny'])) 
-    {
-        $current_miny_geo = $srs_bbox_arrays['BoundingBox'][$srs_native]['miny'];  
-        $miny_geo = floatval($current_miny_geo);
-        
-    }
-
-    if (isset($srs_bbox_arrays['BoundingBox'][$srs_native]['maxx'])) 
-    {
-        $current_maxx_geo = $srs_bbox_arrays['BoundingBox'][$srs_native]['maxx'];  
-        $maxx_geo = floatval($current_maxx_geo);
-        
-    }
-
-    if (isset($srs_bbox_arrays['BoundingBox'][$srs_native]['maxy'])) 
-    {
-        $current_maxy_geo = $srs_bbox_arrays['BoundingBox'][$srs_native]['maxy']; 
-        $maxy_geo = floatval($current_maxy_geo);
-    }    
-
-    return array ($minx_geo, $miny_geo, $maxx_geo, $maxy_geo);
-    
-} 
-
 
 
 //Get workspace request 
@@ -63,7 +27,8 @@ if (empty($select_workspace))
 $select_workspace = $select_workspace.":";
 
 //Set variables
-$local_server           ="http://wms.dirnat.no/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
+$wms_server                 =   "http://wms.dirnat.no/geoserver/ows?";
+$wms_server_getcapabilities =   $wms_server."service=wms&version=1.1.1&request=GetCapabilities";
 
 
 //get that fairly ok wms parser
@@ -73,8 +38,7 @@ include ('include/wms-parser.php');
 //Calculate the workspace length for use later
 $select_workspace_length=strlen($select_workspace);
 
-$nombre_archivo         ="http://wms.dirnat.no/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
-$gestor = fopen($nombre_archivo, "r");
+$gestor = fopen($wms_server_getcapabilities, "r");
 $contenido = stream_get_contents($gestor);
 fclose($gestor);
 
@@ -278,7 +242,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                             ?>    
 
                             wms_layer_<?php echo $i; ?> = new OpenLayers.Layer.WMS("<?php echo isset($l['Title']) ?>",
-                                "http://wms.dirnat.no/geoserver/ows?service=wms",
+                                $wms_server."service=wms",
                                 {
                                     layers: '<?php echo $l['Name'] ?>',
                                     styles: '',
@@ -369,7 +333,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         ?>
 
                         <li><strong><?php echo $l['Title'] ?></strong><br>
-                        (<a href=http://wms.dirnat.no/geoserver/ows?service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><?php
+                        (<a href=<?php echo $wms_server ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><?php
                             echo $l['Name'] ?></a>)<br/>
 
                             <a href = "#" id = "<?php echo ($i-1) ?>-show" class = "showLink"
@@ -383,9 +347,9 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
 
                                 <br>
                                 <table>
-                                    <tr><td colspan=2><a href="http://wms.dirnat.no/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP">Download shapefile</a></td></tr>
+                                    <tr><td colspan=2><a href="<?php echo $wms_server ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP">Download shapefile</a></td></tr>
                                     <tr><td><b>Legend&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>Abstract</b></td></tr>
-                                    <tr><td><img src = "http://wms.dirnat.no/geoserver/ows?service=wms&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo $l['Name'] ?>"></td>
+                                    <tr><td><img src = "<?php echo $wms_server ?>service=wms&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo $l['Name'] ?>"></td>
 
                                         <td>
                                             <?php
