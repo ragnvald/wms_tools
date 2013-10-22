@@ -47,14 +47,16 @@ $caps->parse($contenido);
 $caps->free_parser( );
 
 
-//Calclate the max extent for all layers listed under this workspace                         
+//Go through all relevant layers and find max lonlat extent
+
+             
+// Set default values to be adjusted      
 $minx_geo=180.00;
 $miny_geo=90.00;
 $maxx_geo=-180.00;
 $maxy_geo=-90.00;
 
 
-//Go through all relevant layers and find max extent
 foreach ($caps->layers as $d)
 {
     if ($d['queryable'])
@@ -107,14 +109,18 @@ $map_center_y_geo =(($miny_geo + $maxy_geo) / 2);
 
 $boundingbox_geo = $minx_geo.",".$miny_geo.",".$maxx_geo.",".$maxy_geo;
 
-//Calclate the max extent for all layers listed under this workspace                         
+
+
+//Go through all relevant layers and find max native extent
+
+// Set default values to be adjusted                      
 $minx_native=10000000;
 $miny_native=-10000000;
 $maxx_native=-10000000;
 $maxy_native=10000000;
 
 
-//Go through all relevant layers and find max extent
+
 foreach ($caps->layers as $d)
 {
     if ($d['queryable'])
@@ -170,21 +176,20 @@ $map_center_y_native =(($miny_native + $maxy_native) / 2);
 $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_native;
 
 //Here the HTML code starts
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
     <head>
         <title>Spatial data for the Geoserver workspace: <?php echo $select_workspace; ?></title>
 
-        <script src = "http://www.openlayers.org/api/OpenLayers.js"></script>
+        <script src = "http://www.openlayers.org/dev/OpenLayers.js"></script>
 
         <script type = "text/javascript">
-            var lon = <?php echo $map_center_x_geo; ?>;
-            var lat = <?php echo $map_center_y_geo; ?>;
+            var lon = <?php echo $map_center_x_geo ?>;
+            var lat = <?php echo $map_center_y_geo ?>;
 
             var zoom = 8;
 
-            format = 'image/png';
+            var format = 'image/png';
 
             var map, layer1,layer2 ;
 
@@ -193,7 +198,6 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                 map_controls = [ new OpenLayers.Control.OverviewMap(),       
                     new OpenLayers.Control.LayerSwitcher({'ascending':true}),
                     new OpenLayers.Control.PanZoomBar(),
-                    new OpenLayers.Control.MouseToolbar(), 
                     new OpenLayers.Control.KeyboardDefaults()];
 
                 map = new OpenLayers.Map( 'map', {controls: map_controls} );
@@ -202,10 +206,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
 
                 ls.maximizeControl();
 
-                var gphy = new OpenLayers.Layer.Google(
-                    "Google Physical",
-                    {type: G_PHYSICAL_MAP}
-                );
+                var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
 
                 map.addLayer(gphy);
 
@@ -227,7 +228,8 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
 
                 map.addLayer(wms_osm);<?php 
 
-                //Add layers according to available layers in Geoserver
+                // Add layers according to available layers in Geoserver
+                // Uses lonlat 
                 $i=0;
                 
                 foreach ($caps->layers as $l) {
@@ -236,13 +238,10 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         if  (substr(($l['Name']),0,$select_workspace_length)==$select_workspace) {
                             
                             
-                            $srs_native = (array_keys($d['BoundingBox']));
-                            
-                            echo $d['Name'].":".$srs_native[0]."<br>";
-                            ?>    
+                            $srs_latlon = (array_keys($d['LatLonBoundingBox']));?>    
 
                             wms_layer_<?php echo $i; ?> = new OpenLayers.Layer.WMS("<?php echo isset($l['Title']) ?>",
-                                $wms_server."service=wms",
+                                "<?php echo $wms_server."service=wms" ?>",
                                 {
                                     layers: '<?php echo $l['Name'] ?>',
                                     styles: '',
@@ -278,13 +277,10 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
         <div id = "tags">wms, layer, singletile
         </div>
 
-        <p id = "shortdesc">
-            The data presented are from the geoserver install supervised by Ragnvald Larsen. This setup is currently for testing purposes. Contact me if there are any questions at ragnvald@mindland.com
-        </p>
+        <p id = "shortdesc">The data presented are from the geoserver install supervised by Ragnvald Larsen. This setup is currently for testing purposes. Contact me if there are any questions at ragnvald@mindland.com</p>
 
-        <div id = "map" class = "bigmap">
-        </div>
-
+        <div id="map" class="bigmap"></div>
+        
         <h2><strong>Layers count:</strong><?php echo ($i - 1) ?></h2>
 
         <ol>
@@ -336,15 +332,6 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         (<a href=<?php echo $wms_server ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><?php
                             echo $l['Name'] ?></a>)<br/>
 
-                            <a href = "#" id = "<?php echo ($i-1) ?>-show" class = "showLink"
-                                onclick = "showHide('<?php echo ($i-1) ?>');return false;"> <img src="/graphics/btn_open.gif" border="0" width="19" height="25" alt="Open">See more.</a>
-
-                            <div id = "<?php echo ($i-1) ?>"
-                                class = "more"><a href = "#"
-                                    id = "<?php echo ($i-1) ?>-hide"
-                                    class = "hideLink"
-                                    onclick = "showHide('<?php echo ($i-1) ?>');return false;"><img src="/graphics/btn_close.gif" border="0" width="19" height="25" alt="Close"> Hide</a>
-
                                 <br>
                                 <table>
                                     <tr><td colspan=2><a href="<?php echo $wms_server ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP">Download shapefile</a></td></tr>
@@ -363,7 +350,6 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                                     </tr>
 
                                 </table>
-                            </div>
 
                             <br/></li>
 
