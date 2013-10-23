@@ -181,7 +181,10 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
     <head>
         <title>Spatial data for the Geoserver workspace: <?php echo $select_workspace; ?></title>
 
-        <script src = "http://www.openlayers.org/dev/OpenLayers.js"></script>
+        <script src = "http://www.openlayers.org/api/OpenLayers.js"></script>
+        <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAl9RMqSzhPUXAfeBCXOussRSPP9rEdPLw3W8siaiuHC3ED5y09RTJKbutSNVCYFKU-GnzKsHwbJ3SUw'></script>
+<!-- Load the OpenLayers API library and stylesheet -->
+        <link rel="stylesheet" href="OpenLayers-2.7/theme/default/style.css" type="text/css" />
 
         <script type = "text/javascript">
             var lon = <?php echo $map_center_x_geo ?>;
@@ -191,7 +194,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
 
             var format = 'image/png';
 
-            var map, layer1,layer2 ;
+            var map;
 
             function init(){
 
@@ -206,27 +209,15 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
 
                 ls.maximizeControl();
 
-                var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
 
-                map.addLayer(gphy);
-
-
-                var gsat = new OpenLayers.Layer.Google(
-                    "Google Satellite",
-                    {type: G_SATELLITE_MAP, numZoomLevels: 22}
-                );
-
-                map.addLayer(gsat);
-
-
-                var wms_osm = new OpenLayers.Layer.WMS("Welt",
-                    "http://129.206.229.158/cached/osm?",
-                    {layers: 'europe_wms:hs_srtm_europa', 
-                        format: 'image/png'},
-                    {buffer: 0});
-
-
-                map.addLayer(wms_osm);<?php 
+                    var gmap = new OpenLayers.Layer.Google(
+                        "Google Streets" // the default
+                    );
+                    var gsat = new OpenLayers.Layer.Google(
+                        "Google Satellite",
+                        {type: G_SATELLITE_MAP}
+                    );
+                    map.addLayers([gmap, gsat]);<?php 
 
                 // Add layers according to available layers in Geoserver
                 // Uses lonlat 
@@ -238,23 +229,18 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         if  (substr(($l['Name']),0,$select_workspace_length)==$select_workspace) {
                             
                             
-                            $srs_latlon = (array_keys($d['LatLonBoundingBox']));?>    
-
-                            wms_layer_<?php echo $i; ?> = new OpenLayers.Layer.WMS("<?php echo isset($l['Title']) ?>",
-                                "<?php echo $wms_server."service=wms" ?>",
+                            $srs_latlon = (array_keys($d['BoundingBox']));
+                            //echo $srs_latlon[0];?>    
+                            
+                            wms_layer_<?php echo $i; ?> = new OpenLayers.Layer.WMS("<?php echo $l['Name'] ?>",
+                                "http://wms.dirnat.no/geoserver/ows?service=wms",
                                 {
-                                    layers: '<?php echo $l['Name'] ?>',
-                                    styles: '',
-                                    //srs: 'EPSG:4326',
-                                    format: format,
-                                    transparent: "true"
-                                },
-                                {
-                                    opacity:0.5
-                                },
-                                {
-                                    isBaseLayer: false, visibility: false
+                                    "layers":"<?php echo $l['Name'] ?>",
+                                    "format":"image/png", 
+                                    "transparent": "true"
                                 }
+                                //,
+                                //{ "reproject":"true" }
                             );
 
                             map.addLayer(wms_layer_<?php echo $i; ?>);
@@ -273,15 +259,8 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
 
     <body onload = "init()">
         <h1 id = "title">Data set presentation</h1>
-
-        <div id = "tags">wms, layer, singletile
-        </div>
-
-        <p id = "shortdesc">The data presented are from the geoserver install supervised by Ragnvald Larsen. This setup is currently for testing purposes. Contact me if there are any questions at ragnvald@mindland.com</p>
-
-        <div id="map" class="bigmap"></div>
-        
-        <h2><strong>Layers count:</strong><?php echo ($i - 1) ?></h2>
+        <div id="map" class="bigmap"></div>        
+        <h3><strong>Layers count:</strong><?php echo ($i - 1) ?></h3>
 
         <ol>
             <?php
