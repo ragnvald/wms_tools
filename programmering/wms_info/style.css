@@ -7,7 +7,7 @@ html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pr
 body {line-height:1.5;}
 table {border-collapse:separate;border-spacing:0;}
 caption, th, td {text-align:left;font-weight:normal;}
-table, td, th {vertical-align:top;}
+table, td, th {vertical-align:middle;}
 blockquote:before, blockquote:after, q:before, q:after {content:"";}
 blockquote, q {quotes:"" "";}
 a img {border:none;}
@@ -69,52 +69,74 @@ h6 {
     font-weight: bold;
 }
 
+.olControlAttribution {
+    bottom: 5px;
+}
+
 /**
  * Map Examples Specific
  */
 .smallmap {
-    width: 400px;
-    height: 500px;
+    width: 512px;
+    height: 256px;
     border: 1px solid #ccc;
 }
-.mediummap {
-    width: 1024px;
-    height: 700px;
-    border: 1px solid #ccc;
-}
-.bigmap {
-    width: 1024px;
-    height: 700px;
-    border: 1px solid #ccc;
-}                               
-
-
-                    .header {
-                        background-repeat: no-repeat;
-                        background-position: 0 3px;
-                        padding-left: 20px
-                    }
-   .more {
-      display: none;
-      border-top: 1px solid #666;
-      border-bottom: 1px solid #666; }
-   a.showLink, a.hideLink {
-      text-decoration: none;
-      color: #36f;
-      padding-left: 8px;
-      background: transparent url(down.gif) no-repeat left; }
-   a.hideLink {
-      background: transparent url(up.gif) no-repeat left; }
-   a.showLink:hover, a.hideLink:hover {
-      border-bottom: 1px dotted #36f; }
-
-
 #tags {
     display: none;
 }
 
 #docs p {
     margin-bottom: 0.5em;
-    font-weight: bold;
 }
-
+/* mobile specific */
+@media only screen and (max-width: 600px) {
+    body {
+        height           : 100%;
+        margin           : 0;
+        padding          : 0;
+        width            : 100%;
+    }
+    #map {
+        background : #7391ad;
+        width      : 100%;
+    }
+    #map {
+        border : 0;
+        height : 250px;
+    }
+    #title {
+        font-size   : 1.3em;
+        line-height : 2em;
+        text-indent : 1em;
+        margin      : 0;
+        padding     : 0;
+    }
+    #docs {
+        bottom     : 0;
+        padding    : 1em;
+    }
+    #shortdesc {
+        color      : #aaa;
+        font-size  : 0.8em;
+        padding    : 1em;
+        text-align : right;
+    }
+    #tags {
+        display : none;
+    }
+}
+@media only screen and (orientation: landscape) and (max-width: 600px) {
+    #shortdesc {
+       float: right;
+       width: 25%;
+    }
+    #map {
+        width: 70%;
+    }
+    #docs {
+        font-size: 12px;
+    }
+}
+body {
+    -webkit-text-size-adjust: none;
+}
