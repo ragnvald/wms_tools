@@ -30,7 +30,7 @@ $select_workspace = $select_workspace.":";
 
 
 //Set variables
-$thumbnail_maxx             = 160;
+$thumbnail_maxx             = 200;
 $wms_server                 = "http://wms.dirnat.no/geoserver/";
 $wms_server_ows             = $wms_server."ows?";
 $wms_server_getcapabilities = $wms_server_ows."service=wms&version=1.1.1&request=GetCapabilities";
@@ -353,11 +353,13 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         <li><strong><?php echo $l['Title'] ?></strong><br>
                                 <table>
                                     <tr>
-                                        <td><b>Abstract</b></td>
-                                        <td><?php echo $l['Abstract']?></td>
-                                    </tr>
-                                    <tr>
                                         <td valign=top>
+                                        <?php 
+                                        if (strlen($l['Abstract'])>0) {
+                                            echo "Abstract<br>";
+                                            echo $l['Abstract']."<br>";
+                                        }
+                                        ?>
                                         <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=<?php echo $thumbnail_maxx ?>&height=<?php echo $thumbnail_maxy ?>&srs=<?php echo $srs_native[0]?>&format=image/png"><hr>
                                         </td>
                                         <td><a href=<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><img src="include/icon_link.png" border="0" width="16" height="16" alt="icon_link.png (343 bytes)">View on server</a>
@@ -377,6 +379,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                                         </td>
                                     </tr>
                                 </table>
+                                <hr>
                             <br/></li>
 
                         <?php
