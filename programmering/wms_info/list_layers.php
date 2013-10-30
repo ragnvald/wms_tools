@@ -24,11 +24,15 @@ if (empty($select_workspace))
     $select_workspace="inon";
 }
 
+$domain = $select_workspace;
+
 $select_workspace = $select_workspace.":";
 
+
 //Set variables
-$wms_server                 =   "http://wms.dirnat.no/geoserver/ows?";
-$wms_server_getcapabilities =   $wms_server."service=wms&version=1.1.1&request=GetCapabilities";
+$wms_server                 = "http://wms.dirnat.no/geoserver/";
+$wms_server_ows             = $wms_server."ows?";
+$wms_server_getcapabilities = $wms_server_ows."service=wms&version=1.1.1&request=GetCapabilities";
 
 
 //get that fairly ok wms parser
@@ -184,8 +188,8 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
 
         <script src ='http://openlayers.org/api/OpenLayers.js'></script>
         
-        <link rel="stylesheet" href="style.css" type="text/css">
-        <link rel="stylesheet" href="include/default_style.css" type="text/css">
+        <link rel="stylesheet" href="include/style_layout.css" type="text/css">
+        <link rel="stylesheet" href="include/style_map.css" type="text/css">
         
         <script src ='http://maps.google.com/maps?file=api&v=2&key=ABQIAAAAl9RMqSzhPUXAfeBCXOussRSPP9rEdPLw3W8siaiuHC3ED5y09RTJKbutSNVCYFKU-GnzKsHwbJ3SUw'></script>
        
@@ -217,16 +221,15 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                             new OpenLayers.Projection("EPSG:4326"),
                             map.getProjectionObject()
                         ), 4
-                    );    
-                
+                    );  
                 <?php 
 
                 // Add layers according to available layers in Geoserver
-                // Uses lonlat 
+                
                 $i=0;
                 
                 foreach ($caps->layers as $l) {
-                    //if (1==2) {      
+                    
                     if ($l['queryable']) {          
                     
                         //Filter out layers which are similar to the one 
@@ -255,9 +258,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                             <?php $i++;
                         }  
                     } 
-
-                }?>                                                                                                                 
-                //map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);     
+                }?>                                                         
             }
         </script>
      </head>
@@ -337,26 +338,29 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                             $current_maxy = floatval($current_maxy_t);
                         }    
 
-
                         $boundingbox_geo = $current_minx.",".$current_miny.",".$current_maxx.",".$current_maxy;
-                        
+     
                         ?>
-
                         <li><strong><?php echo $l['Title'] ?></strong><br>
-                        (<a href=<?php echo $wms_server ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><?php
-                            echo $l['Name'] ?></a>)<br/>
-
-                                <br>
                                 <table>
-                                    <tr><td colspan=2><a href="<?php echo $wms_server ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP">Download shapefile</a></td></tr>
-                                    <tr><td><b>Legend&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>Abstract</b></td></tr>
-                                    <tr><td><img src = "<?php echo $wms_server ?>service=wms&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo $l['Name'] ?>"></td>
-
+                                    <tr>
+                                        <td><b>Abstract</b></td>
+                                        <td><?php echo $l['Abstract']?></td>
+                                    </tr>
+                                    <tr>
                                         <td>
-                                            <?php
-                                            echo $l['Abstract']?>
-                                            <br>
-                                            <b>Bounding box:</b><br>
+                                        <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=200&height=100&srs=<?php echo $srs_native[0]?>&format=image/png">
+                                        </td>
+                                        <td><a href=<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><img src="include/icon_link.png" border="0" width="16" height="16" alt="icon_link.png (343 bytes)">View on server</a>   
+                            <a href="<?php echo $wms_server_ows ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP"><img src="include/icon_download.png" border="0" width="16" height="16" alt="icon_download.png (1 159 bytes)">Download shapefile</a><br>                                           
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src = "<?php echo $wms_server_ows ?>service=wms&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo $l['Name'] ?>">
+                                        </td>
+                                        <td valign=bottom>
+                                        <b>Bounding box:</b><br>
                                             <i><?php echo $srs_native[0].": ".$boundingbox_native; ?>)</i><br> 
                                             <i><?php echo "Geograpihcal: ".$boundingbox_geo; ?>)</i>
                                         </td>
