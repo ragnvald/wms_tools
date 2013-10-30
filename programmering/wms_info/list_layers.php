@@ -30,6 +30,7 @@ $select_workspace = $select_workspace.":";
 
 
 //Set variables
+$thumbnail_maxx             = 160;
 $wms_server                 = "http://wms.dirnat.no/geoserver/";
 $wms_server_ows             = $wms_server."ows?";
 $wms_server_getcapabilities = $wms_server_ows."service=wms&version=1.1.1&request=GetCapabilities";
@@ -112,8 +113,6 @@ $map_center_x_geo =(($minx_geo + $maxx_geo) / 2);
 $map_center_y_geo =(($miny_geo + $maxy_geo) / 2);
 
 $boundingbox_geo = $minx_geo.",".$miny_geo.",".$maxx_geo.",".$maxy_geo;
-
-
 
 //Go through all relevant layers and find max native extent
 
@@ -310,6 +309,13 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         
                         $boundingbox_native = $current_minx.",".$current_miny.",".$current_maxx.",".$current_maxy;
                         
+                        $distance_xmin_xmax = $current_maxx - $current_minx;
+                        $distance_ymin_ymax = $current_maxy - $current_miny;
+
+                        $thumbnail_ratio = ($distance_ymin_ymax/$distance_xmin_xmax);
+
+                        $thumbnail_maxy = intval($thumbnail_maxx*(1/$thumbnail_ratio));
+                        
                         //Handle geographinc information
                                             
                         if (isset($l['LatLonBoundingBox']['minx'])) 
@@ -326,7 +332,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                             $current_miny = floatval($current_miny_t);
                         }
 
-                        if (isset($l['LatLonBoundingBox'][$srs_native[0]]['maxx'])) 
+                        if (isset($l['LatLonBoundingBox']['maxx'])) 
                         {
                             $current_maxx_t = $l['LatLonBoundingBox']['maxx'];
                             $current_maxx = floatval($current_maxx_t);  
@@ -339,6 +345,9 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         }    
 
                         $boundingbox_geo = $current_minx.",".$current_miny.",".$current_maxx.",".$current_maxy;
+                        
+                        
+
      
                         ?>
                         <li><strong><?php echo $l['Title'] ?></strong><br>
@@ -348,10 +357,12 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                                         <td><?php echo $l['Abstract']?></td>
                                     </tr>
                                     <tr>
-                                        <td>
-                                        <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=200&height=100&srs=<?php echo $srs_native[0]?>&format=image/png">
+                                        <td valign=top>
+                                        <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=<?php echo $thumbnail_maxx ?>&height=<?php echo $thumbnail_maxy ?>&srs=<?php echo $srs_native[0]?>&format=image/png"><hr>
                                         </td>
-                                        <td><a href=<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><img src="include/icon_link.png" border="0" width="16" height="16" alt="icon_link.png (343 bytes)">View on server</a>   
+                                        <td><a href=<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><img src="include/icon_link.png" border="0" width="16" height="16" alt="icon_link.png (343 bytes)">View on server</a>
+                                        <br>
+                                        <br>  
                             <a href="<?php echo $wms_server_ows ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP"><img src="include/icon_download.png" border="0" width="16" height="16" alt="icon_download.png (1 159 bytes)">Download shapefile</a><br>                                           
 
                                         </td>
@@ -374,6 +385,9 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                 }
             }
             ?>
-    </ol>
+    </ol><?php 
+    echo $distance_xmin_xmax."<br>";
+    echo $distance_ymin_ymax;?>
+    
     </body>
 </html>
