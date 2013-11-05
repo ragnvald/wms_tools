@@ -7,6 +7,10 @@ System requirements
 -------------------
 PHP 5.3 or below. Access to a WMS server.
 
+License
+-------
+GNU General Public License, version 3 (GPL-3.0)
+
 
 Libraries
 ---------
