@@ -83,6 +83,12 @@ h6 {
 }
 
 
+.mediummap {
+    width: 600px;
+    height: 600px;
+    border: 1px solid #ccc;
+}
+
 .bigmap {
     width: 1024px;
     height: 512px;

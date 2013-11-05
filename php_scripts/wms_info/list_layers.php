@@ -275,7 +275,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
      </head>
      <body onload = "init()">
         <h1 id = "title">Data set presentation</h1>
-        <div id="map" class="bigmap"></div>
+        <div id="map" class="mediummap"></div>
         <br>
         <strong>Layers count:</strong> <?php echo ($i - 1) ?>
         <ol>
@@ -361,6 +361,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                                         <td><b>Map preview</b><br>
                                         <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=<?php echo $thumbnail_maxx ?>&height=<?php echo $thumbnail_maxy ?>&srs=<?php echo $srs_native[0]?>&format=image/png">
                                         </td>
+                                        <td>&nbsp;</td>
                                         <td><?php 
                                         if (strlen($l['Abstract'])>0) {
                                             echo "<b>Abstract</b><br>";
@@ -388,6 +389,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                                     <tr>
                                         <td><b>Legend:</b><br><img src = "<?php echo $wms_server_ows ?>service=wms&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo $l['Name'] ?>">
                                         </td>
+                                        <td>&nbsp;</td>
                                         <td valign=bottom>
                                         <b>Bounding box:</b><br>
                                             <i><?php echo $srs_native[0].": ".$boundingbox_native; ?>)</i><br> 
