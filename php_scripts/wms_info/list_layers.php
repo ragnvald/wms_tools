@@ -11,14 +11,31 @@
 ///////////////////////////////////////////////////////////////////
 
 
-//Get workspace request 
+//Script settings
 
+$default_workspace          = "geonode";
+$thumbnail_maxx             = 200;
+$wms_server                 = "http://54.235.206.158:80/geoserver/";
+$wms_server_ows             = $wms_server."ows?";
+$wms_server_getcapabilities = $wms_server_ows."service=wms&version=1.1.1&request=GetCapabilities";
+
+
+$link_viewongeoserver       = true;
+$link_downloadshapefile     = true;
+
+$link_viewongeonode         = true;
+$geonode_server             = "http://ec2-54-235-206-158.compute-1.amazonaws.com"."/data/";
+
+
+
+
+//Get workspace request 
 $select_workspace=(isset($_GET['ws']) ? $_GET['ws'] : null);
 
-//Do the default workspace if the request returns empty
+//USe the default workspace if the request returns empty
 if (empty($select_workspace))
 {
-    $select_workspace="geonode";
+    $select_workspace = $default_workspace;
 }
 // The workspace has been set. Ready to roll...
 else {
@@ -30,12 +47,6 @@ $domain = $select_workspace;
 $select_workspace = $select_workspace.":";
 
 
-//Set variables
-$thumbnail_maxx             = 200;
-$wms_server                 = "http://54.235.206.158:80/geoserver/";
-$wms_server_ows             = $wms_server."ows?";
-$wms_server_getcapabilities = $wms_server_ows."service=wms&version=1.1.1&request=GetCapabilities";
-
 
 //get that fairly ok wms parser
 include ('include/wms-parser.php');
@@ -44,8 +55,8 @@ include ('include/wms-parser.php');
 //Calculate the workspace length for use later
 $select_workspace_length=strlen($select_workspace);
 
-$gestor = fopen($wms_server_getcapabilities, "r");
-$contenido = stream_get_contents($gestor);
+$gestor     = fopen($wms_server_getcapabilities, "r");
+$contenido  = stream_get_contents($gestor);
 fclose($gestor);
 
 $caps = new CapabilitiesParser( );
@@ -190,8 +201,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
         
         <link rel="stylesheet" href="include/style_layout.css" type="text/css">
         <link rel="stylesheet" href="include/style_map.css" type="text/css">
-        
-        <script src ='http://maps.google.com/maps?file=api&v=2&key=ABQIAAAAl9RMqSzhPUXAfeBCXOussRSPP9rEdPLw3W8siaiuHC3ED5y09RTJKbutSNVCYFKU-GnzKsHwbJ3SUw'></script>
+
        
         <script type = "text/javascript">
             var layer, map;
@@ -247,11 +257,12 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                                     transparent: "true"
                                 },
                                 {opacity: 1.0},
-                                {isBaseLayer: false, visibility: true}
+                                {isBaseLayer: false}
                             );
-
-                            wms_layer_<?php echo $i; ?>.setVisibility(true); 
                              
+                             
+                            wms_layer_<?php echo $i; ?>.setVisibility(false); 
+                            
                             map.addLayer(wms_layer_<?php echo $i; ?>);
 
 
@@ -265,7 +276,8 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
      <body onload = "init()">
         <h1 id = "title">Data set presentation</h1>
         <div id="map" class="bigmap"></div>
-        <h3><strong>Layers count:</strong><?php echo ($i - 1) ?></h3>
+        <br>
+        <strong>Layers count:</strong> <?php echo ($i - 1) ?>
         <ol>
             <?php
             $i=1;
@@ -312,7 +324,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
 
                         $thumbnail_ratio = ($distance_ymin_ymax/$distance_xmin_xmax);
 
-                        $thumbnail_maxy = intval($thumbnail_maxx*(1/$thumbnail_ratio));
+                        $thumbnail_maxy = intval($thumbnail_maxx*$thumbnail_ratio);
                         
                         //Handle geographinc information
                                             
@@ -354,10 +366,22 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                                             echo "<b>Abstract</b><br>";
                                             echo $l['Abstract']."<br><br>";
                                         }
-                                        ?><a href=<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><img src="graphics/icon_link.png" border="0" width="16" height="16" alt="icon_link.png (343 bytes)">View on server</a>
+                                        if ($link_viewongeoserver==true) {
+                                        ?><a href="<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers" target="_blank"><img src="graphics/icon_link.png" border="0" width="16" height="16" alt="Link to geoserver">View on Geoserver</a>
                                         <br>
-                                        <br>  
-                            <a href="<?php echo $wms_server_ows ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP"><img src="graphics/icon_download.png" border="0" width="16" height="16" alt="icon_download.png (1?159 bytes)">Download shapefile</a><br>                                           
+                                        <br> 
+                                        <?php
+                                        } 
+                                        if ($link_downloadshapefile==true) {
+                                      ?><a href="<?php echo $wms_server_ows ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP" target="_blank"><img src="graphics/icon_download.png" border="0" width="16" height="16" alt="icon_download.png (1?159 bytes)">Download shapefile</a>
+                                        <br>
+                                        <br>
+                                        <?php
+                                        } 
+                                        if ($link_viewongeonode==true) {
+                                        ?><a href="<?php echo $geonode_server ?><?php echo $l['Name'] ?>" target="_blank"><img src="graphics/icon_link.png" border="0" width="16" height="16" alt="Link to geonode server">View on Geonode server</a><br><?php
+                                        }
+                                        ?>   
 
                                         </td>
                                     </tr>
