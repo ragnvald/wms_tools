@@ -264,7 +264,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
      </head>
      <body onload = "init()">
         <h1 id = "title">Data set presentation</h1>
-        <div id="map" class="smallmap"></div>
+        <div id="map" class="bigmap"></div>
         <h3><strong>Layers count:</strong><?php echo ($i - 1) ?></h3>
         <ol>
             <?php
@@ -343,15 +343,15 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         $boundingbox_geo = $current_minx.",".$current_miny.",".$current_maxx.",".$current_maxy;
      
                         ?>
-                        <li><strong><?php echo $l['Title'] ?></strong><br>
+                        <li><strong><?php echo $l['Title'] ?></strong><br><br>
                                 <table>
                                     <tr>
-                                        <td valign=top>
-                                        <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=<?php echo $thumbnail_maxx ?>&height=<?php echo $thumbnail_maxy ?>&srs=<?php echo $srs_native[0]?>&format=image/png"><hr>
+                                        <td><b>Map preview</b><br>
+                                        <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=<?php echo $thumbnail_maxx ?>&height=<?php echo $thumbnail_maxy ?>&srs=<?php echo $srs_native[0]?>&format=image/png">
                                         </td>
-                                        <td valign=top><?php 
+                                        <td><?php 
                                         if (strlen($l['Abstract'])>0) {
-                                            echo "Abstract<br>";
+                                            echo "<b>Abstract</b><br>";
                                             echo $l['Abstract']."<br><br>";
                                         }
                                         ?><a href=<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers><img src="graphics/icon_link.png" border="0" width="16" height="16" alt="icon_link.png (343 bytes)">View on server</a>
@@ -381,6 +381,6 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
             }?>
     </ol>
     <br>
-    <i>Version 0.6</i>
+    <i><a href="https://github.com/miljodir/wms_tools">WMS php tools Version 0.6</a></i>
     </body>
 </html>
