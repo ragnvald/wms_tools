@@ -355,51 +355,52 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                         $boundingbox_geo = $current_minx.",".$current_miny.",".$current_maxx.",".$current_maxy;
      
                         ?>
-                        <li><strong><?php echo $l['Title'] ?></strong><br><br>
-                                <table>
-                                    <tr>
-                                        <td><b>Map preview</b><br>
-                                        <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=<?php echo $thumbnail_maxx ?>&height=<?php echo $thumbnail_maxy ?>&srs=<?php echo $srs_native[0]?>&format=image/png">
-                                        </td>
-                                        <td>&nbsp;</td>
-                                        <td><?php 
+        <li><strong><?php echo $l['Title'] ?></strong><br><br>
+            <table>
+                <tr>
+                    <td><b>Map preview</b><br>
+                        <img src="<?php echo $wms_server ?><?php echo $domain ?>/wms?service=WMS&version=1.1.0&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=<?php echo $thumbnail_maxx ?>&height=<?php echo $thumbnail_maxy ?>&srs=<?php echo $srs_native[0]?>&format=image/png">
+                    </td>
+                    <td>&nbsp;</td>
+                    <td><?php 
                                         if (strlen($l['Abstract'])>0) {
                                             echo "<b>Abstract</b><br>";
                                             echo $l['Abstract']."<br><br>";
                                         }
                                         if ($link_viewongeoserver==true) {
-                                        ?><a href="<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers" target="_blank"><img src="graphics/icon_link.png" border="0" width="16" height="16" alt="Link to geoserver">View on Geoserver</a>
-                                        <br>
-                                        <br> 
+                                        ?>
+                        <a href="<?php echo $wms_server_ows ?>service=wms&version=1.1.1&request=GetMap&layers=<?php echo $l['Name'] ?>&styles=&bbox=<?php echo $boundingbox_native;?>&width=512&height=469&srs=<?php echo $srs_native[0] ?>&format=application/openlayers" target="_blank"><img src="graphics/icon_link.png" border="0" width="16" height="16" alt="Link to geoserver">View on Geoserver</a>
+                        <br>
+                        <br> 
                                         <?php
                                         } 
                                         if ($link_downloadshapefile==true) {
-                                      ?><a href="<?php echo $wms_server_ows ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP" target="_blank"><img src="graphics/icon_download.png" border="0" width="16" height="16" alt="icon_download.png (1?159 bytes)">Download shapefile</a>
-                                        <br>
-                                        <br>
+                                      ?>
+                        <a href="<?php echo $wms_server_ows ?>service=WFS&version=1.0.0&request=GetFeature&typeName=<?php echo $l['Name'] ?>&outputFormat=SHAPE-ZIP" target="_blank"><img src="graphics/icon_download.png" border="0" width="16" height="16" alt="icon_download.png (1?159 bytes)">Download shapefile</a>
+                        <br>
+                        <br>
                                         <?php
                                         } 
                                         if ($link_viewongeonode==true) {
-                                        ?><a href="<?php echo $geonode_server ?><?php echo $l['Name'] ?>" target="_blank"><img src="graphics/icon_link.png" border="0" width="16" height="16" alt="Link to geonode server">View on Geonode server</a><br><?php
+                                        ?>
+                        <a href="<?php echo $geonode_server ?><?php echo $l['Name'] ?>" target="_blank"><img src="graphics/icon_link.png" border="0" width="16" height="16" alt="Link to geonode server">View on Geonode server</a><br><?php
                                         }
                                         ?>   
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Legend:</b><br><img src = "<?php echo $wms_server_ows ?>service=wms&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo $l['Name'] ?>">
-                                        </td>
-                                        <td>&nbsp;</td>
-                                        <td valign=bottom>
-                                        <b>Bounding box:</b><br>
-                                            <i><?php echo $srs_native[0].": ".$boundingbox_native; ?>)</i><br> 
-                                            <i><?php echo "Geograpihcal: ".$boundingbox_geo; ?>)</i>
-                                        </td>
-                                    </tr>
-                                </table>
-                                <hr>
-                            <br/></li>
-
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Legend:</b><br><img src = "<?php echo $wms_server_ows ?>service=wms&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=<?php echo $l['Name'] ?>">
+                        </td>
+                        <td>&nbsp;</td>
+                        <td valign=bottom>
+                            <b>Bounding box:</b><br>
+                            <i><?php echo $srs_native[0].": ".$boundingbox_native; ?>)</i><br> 
+                            <i><?php echo "Geograpihcal: ".$boundingbox_geo; ?>)</i>
+                        </td>
+                    </tr>
+                </table>
+                <hr>
+                <br/></li>
                         <?php
                         $i++;
                     }
@@ -407,6 +408,6 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
             }?>
     </ol>
     <br>
-    <i><a href="https://github.com/miljodir/wms_tools">WMS php tools Version 0.6</a></i>
+    <i><a href="https://github.com/miljodir/wms_tools" target="_blank">WMS php tools Version 0.6</a></i>
     </body>
 </html>
