@@ -212,15 +212,16 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
             var lon = <?php echo $map_center_x_geo ?>;
             var lat = <?php echo $map_center_y_geo ?>;
 
-            var zoom = 8;
+            //not used yet
+            var zoom = 12;
 
             var format = 'image/png';
             
             //maps established
             function init(){
                 
-               var geographic = new OpenLayers.Projection("EPSG:4326");
-               var mercator = new OpenLayers.Projection("EPSG:900913");
+               var geographic  =  new OpenLayers.Projection("EPSG:4326");
+               var mercator    =  new OpenLayers.Projection("EPSG:900913");
                                 
                map = new OpenLayers.Map( 'map',{projection: mercator});
                 
