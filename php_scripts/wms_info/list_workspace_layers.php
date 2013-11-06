@@ -20,6 +20,9 @@ $wms_server_ows             = $wms_server."ows?";
 $wms_server_getcapabilities = $wms_server_ows."service=wms&version=1.1.1&request=GetCapabilities";
 
 
+$overviewmap_visibility     = true;
+$overviewmap_layers_on      = "true";
+
 $link_viewongeoserver       = true;
 $link_downloadshapefile     = true;
 
@@ -261,7 +264,7 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
                             );
                              
                              
-                            wms_layer_<?php echo $i; ?>.setVisibility(false); 
+                            wms_layer_<?php echo $i; ?>.setVisibility(<?php echo $overviewmap_layers_on?>); 
                             
                             map.addLayer(wms_layer_<?php echo $i; ?>);
 
@@ -274,9 +277,12 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
         </script>
      </head>
      <body onload = "init()">
-        <h1 id = "title">Data set presentation</h1>
+        <?php if ($overviewmap_visibility==true) {?>
         <div id="map" class="mediummap"></div>
         <br>
+        <?php
+        }
+        ?>
         <strong>Layers count:</strong> <?php echo ($i - 1) ?>
         <ol>
             <?php
@@ -408,6 +414,6 @@ $boundingbox_native = $minx_native.",".$miny_native.",".$maxx_native.",".$maxy_n
             }?>
     </ol>
     <br>
-    <i><a href="https://github.com/miljodir/wms_tools" target="_blank">WMS php tools Version 0.6</a></i>
+    <i><a href="https://github.com/miljodir/wms_tools" target="_blank">WMS php tools Version 0.7</a></i>
     </body>
 </html>
