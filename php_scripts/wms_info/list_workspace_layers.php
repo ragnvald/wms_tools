@@ -13,21 +13,21 @@
 
 //Script settings
 
-$default_workspace          = "geonode";
+$default_workspace          = "files";
 $thumbnail_maxx             = 200;
-$wms_server                 = "http://54.235.206.158:80/geoserver/";
+$wms_server                 = "http://mapa.meioambiente.tl/geoserver/";
 $wms_server_ows             = $wms_server."ows?";
 $wms_server_getcapabilities = $wms_server_ows."service=wms&version=1.1.1&request=GetCapabilities";
 
 
 $overviewmap_visibility     = true;
-$overviewmap_layers_on      = "true";
+$overviewmap_layers_on      = "false";
 
 $link_viewongeoserver       = true;
 $link_downloadshapefile     = true;
 
-$link_viewongeonode         = true;
-$geonode_server             = "http://ec2-54-235-206-158.compute-1.amazonaws.com"."/data/";
+$link_viewongeonode         = false;
+$geonode_server             = "http://testserver.com"."/data/";
 
 
 
